@@ -231,3 +231,21 @@ function CreateImage()
     return image; 
 }
 
+function CreateRidged() 
+{
+	var image = CreateImage(); 
+
+	var halfRange = 255/2; 
+
+	for(var i = 0; i < image.length; i++)
+	{
+		var swapped = halfRange - image[i];
+		image[i] = halfRange + swapped; 
+
+		image[i] = image[i] > 128 ? 255 : 0; 
+		
+	}
+
+	return image; 
+}
+
