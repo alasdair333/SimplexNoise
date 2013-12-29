@@ -197,6 +197,128 @@ function Scale(minRange, maxRange, minNormal, maxNormal, output)
 	return minRange + ((output - minNormal) * (maxRange - minRange) / (maxNormal - minNormal));
 }
 
+
+function CreateGradient()
+{
+	var image = [];
+
+	var xResolution = 512; 
+	var yResolution = 512; 
+
+	var gradient = 0;
+
+	for (var y = 0; y < yResolution; y++)
+	{
+		gradient = Scale(0, 255, 0, 255, y); 
+
+		for(var x = 0; x < xResolution; x++)
+		{
+			image.push(gradient);
+		}
+	}
+	
+	return image; 
+}
+
+function Select(image, amount)
+{
+	var img = image; 
+	for(var i = 0; i < img.length; i++)
+	{
+		if(img[i] < amount)
+		{
+			img[i] = 0;
+		}
+		else
+		{
+			img[i] = 255; 
+		}
+	}
+
+	return img; 
+}
+
+function ScaleOffset(image, scale, offset)
+{
+	var img = image;
+	for(var i = 0; i < img.length; i++)
+	{
+		img[i] = img[i] * scale + offset; 
+	}
+
+	return img;
+}
+
+function ScaleDomain(image, xscale, yscale)
+{
+	var img = [];
+	var img2 = []; 
+
+	for(var i = 0; i < 512; i++)
+	{
+		img2.push(image[i]);
+	}
+
+	for(var y = 1; y < 512; y++)
+	{
+		for(var x = 0; x < 512; x++)
+		{
+			img.push(img2[x]);
+		}	
+	}
+
+	return img;
+}
+
+function TranslateDomain(srcImage, ty)
+{
+	var img = [];
+	for(var i = 0; i < srcImage.length; i++)
+	{
+		img.push(srcImage[i] + ty[i]);
+	}
+
+	return img; 
+}
+
+function Combiner(Img1, Img2)
+{
+	var img = []; 
+
+	for(var i = 0; i < Img1.length; i++)
+	{
+
+		if(Img1[i] > 0 && Img2[i] > 0)
+		{
+			img.push(255);	
+		}
+		else
+		{
+			img.push(0); 
+		}
+	}
+	return img; 
+}
+
+function Inverter(Img)
+{
+	var img = [];
+
+	for(var i = 0; i < Img.length; i++)
+	{
+		if(Img[i] >= 128)
+		{
+			img.push(0); 
+		}
+		else
+		{
+			img.push(255); 
+		}
+	}
+
+	return img; 
+}
+
 /*
 	Function: createImage
 
@@ -239,11 +361,10 @@ function CreateRidged()
 
 	for(var i = 0; i < image.length; i++)
 	{
-		var swapped = halfRange - image[i];
+		var swapped = image[i] - halfRange;
 		image[i] = halfRange + swapped; 
 
-		image[i] = image[i] > 128 ? 255 : 0; 
-		
+		//image[i] = image[i] > 10 ? image[i] : 0; 
 	}
 
 	return image; 

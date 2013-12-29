@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+      <meta charset="utf-8" />
+
+      <script src="javascripts/SimplexNoise.js"></script>
+
+      <script>
+          function newEl(tag) { return document.createElement(tag); }
+
+          window.addEventListener('load', mInit, false);
+
+          // rbgData - 3 bytes per pixel - alpha-channel data not used (or valid)
+          //
+          function createImageFromRGBdata(rgbData, width, height) {
+              var mCanvas = newEl('canvas');
+              mCanvas.width = width;
+              mCanvas.height = height;
+
+              var mContext = mCanvas.getContext('2d');
+              var mImgData = mContext.createImageData(width, height);
+
+              var srcIndex = 0, dstIndex = 0, curPixelNum = 0;
+              for (curPixelNum = 0; curPixelNum < width * height; curPixelNum++) {
+                  mImgData.data[dstIndex] = rgbData[srcIndex];        // r
+                  mImgData.data[dstIndex + 1] = rgbData[srcIndex];    // g
+                  mImgData.data[dstIndex + 2] = rgbData[srcIndex];    // b
+                  mImgData.data[dstIndex + 3] = 255; // 255 = 0xFF - constant alpha, 100% opaque
+                  srcIndex++;
+                  dstIndex += 4;
+              }
+              mContext.putImageData(mImgData, 0, 0);
+              return mCanvas;
+          }
+
+          var image = CreateGradient();
+          var rgbData = Select(image, 128);
+
+          function mInit() {
+              // 1. - append data as a canvas element
+              var mCanvas = createImageFromRGBdata(rgbData, 512, 512);
+              mCanvas.setAttribute('style', "width:512px; height:512px; border:solid 1px black"); // make it large enough to be visible
+              //document.body.appendChild(mCanvas);
+
+              // 2 - append data as a (saveable) image
+              var mImg = newEl("img");
+              var imgDataUrl = mCanvas.toDataURL();   // make a base64 string of the image data (the array above)
+              mImg.src = imgDataUrl;
+              mImg.setAttribute('style', "width:512px; height:512px; border:solid 1px black"); // make it large enough to be visible
+              document.body.appendChild(mImg);
+          }
+
+        </script>
+        <title></title>
+    </head>
+    <body>
+       
+    </body>
+</html>
